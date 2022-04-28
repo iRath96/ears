@@ -452,7 +452,10 @@ def enable_modules(self, modules, debug=False, crosscompiling=False) :
                         pcmodules.remove("QtAssistant")
                         pcmodules.append("QtAssistantClient")
                 if sys.platform.startswith('linux'):
-                        self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join(pcmodules))
+                        self.ParseConfig('pkg-config %s --libs --cflags'% ' '.join([
+                                re.sub(r"^Qt", "Qt5", module)
+                                for module in pcmodules
+                        ]))
                 elif sys.platform == 'darwin':
                         for module in pcmodules:
                                 #self.AppendUnique(CPPPATH="$QTDIR/frameworks/%s.framework/Versions/5/Headers" % module)
