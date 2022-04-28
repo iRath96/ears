@@ -90,6 +90,8 @@ public:
 
     /// Are the following two versions compatible?
     inline bool isCompatible(const Version &other) const {
+        if (m_major == 0 && m_minor == 5 && other.m_major == 0 && other.m_minor == 6)
+            return true;
         return m_major == other.m_major &&
             m_minor == other.m_minor;
     }
