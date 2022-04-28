@@ -39,7 +39,6 @@
 /mitsuba/build/.vs
 /mitsuba/build/[R,r]elease
 /mitsuba/build/[D,d]ebug
-/mitsuba/data
 /mitsuba/dist
 
 # Rendering artifacts
