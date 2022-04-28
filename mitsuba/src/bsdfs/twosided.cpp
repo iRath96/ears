@@ -105,6 +105,20 @@ public:
                 "a transmission component can be nested!");
     }
 
+    Spectrum getDiffuseReflectance(const Intersection &its) const {
+		if (its.wi.z > 0)
+			return m_nestedBRDF[0]->getDiffuseReflectance(its);
+		else
+			return m_nestedBRDF[1]->getDiffuseReflectance(its);
+	}
+
+	Spectrum getSpecularReflectance(const Intersection &its) const {
+		if (its.wi.z > 0)
+			return m_nestedBRDF[0]->getSpecularReflectance(its);
+		else
+			return m_nestedBRDF[1]->getSpecularReflectance(its);
+	}
+
     Spectrum eval(const BSDFSamplingRecord &bRec, EMeasure measure) const {
         BSDFSamplingRecord b(bRec);
 
@@ -193,13 +207,6 @@ public:
         } else {
             BSDF::addChild(name, child);
         }
-    }
-
-    Spectrum getDiffuseReflectance(const Intersection &its) const {
-        if (its.wi.z > 0)
-            return m_nestedBRDF[0]->getDiffuseReflectance(its);
-        else
-            return m_nestedBRDF[1]->getDiffuseReflectance(its);
     }
 
     Float getRoughness(const Intersection &its, int component) const {

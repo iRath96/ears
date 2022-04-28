@@ -315,7 +315,11 @@ public:
     }
 
     Spectrum getSpecularReflectance(const Intersection &its) const {
-        return m_specularReflectance->eval(its);
+        /* Evaluate the roughness texture */
+        Float alpha = m_alpha->eval(its).average();
+        Float Ftr = m_externalRoughTransmittance->evalDiffuse(alpha);
+
+        return m_specularReflectance->eval(its) * (1 - Ftr);
     }
 
     /// Helper function: reflect \c wi with respect to a given surface normal

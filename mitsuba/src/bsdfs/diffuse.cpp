@@ -168,6 +168,10 @@ public:
         return std::numeric_limits<Float>::infinity();
     }
 
+    Spectrum getSpecularReflectance(const Intersection &its) const {
+        return Spectrum(0.f);
+    }
+
     std::string toString() const {
         std::ostringstream oss;
         oss << "SmoothDiffuse[" << endl

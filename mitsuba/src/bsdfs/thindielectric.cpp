@@ -308,6 +308,10 @@ public:
         return 0.0f;
     }
 
+    Spectrum getSpecularReflectance(const Intersection &its) const {
+        return m_specularReflectance->eval(its);
+    }
+
     std::string toString() const {
         std::ostringstream oss;
         oss << "ThinDielectric[" << endl

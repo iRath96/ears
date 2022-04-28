@@ -144,6 +144,11 @@ public:
         configure();
     }
 
+    Spectrum getSpecularReflectance(const Intersection &its) const {
+        Float alpha = fresnelDielectricExt(std::abs(Frame::cosTheta(its.wi)), m_eta);
+        return alpha * m_specularReflectance->eval(its) + (1 - alpha) * m_nested->getSpecularReflectance(its);
+    }
+
     void serialize(Stream *stream, InstanceManager *manager) const {
         BSDF::serialize(stream, manager);
 

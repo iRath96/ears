@@ -261,16 +261,20 @@ public:
         Float cosThetaT;
         Float F = fresnelDielectricExt(Frame::cosTheta(bRec.wi), cosThetaT, m_eta);
 
+        Spectrum specRef = F * m_specularReflectance->eval(bRec.its);
+        Spectrum specTrans = (1 - F) * m_specularTransmittance->eval(bRec.its);
+        Float reflectionPdf = specRef.average() / (specRef.average() + specTrans.average());
+
         if (Frame::cosTheta(bRec.wi) * Frame::cosTheta(bRec.wo) >= 0) {
             if (!sampleReflection || std::abs(dot(reflect(bRec.wi), bRec.wo)-1) > DeltaEpsilon)
                 return 0.0f;
 
-            return sampleTransmission ? F : 1.0f;
+            return sampleTransmission ? reflectionPdf : 1.0f;
         } else {
             if (!sampleTransmission || std::abs(dot(refract(bRec.wi, cosThetaT), bRec.wo)-1) > DeltaEpsilon)
                 return 0.0f;
 
-            return sampleReflection ? 1-F : 1.0f;
+            return sampleReflection ? 1-reflectionPdf : 1.0f;
         }
     }
 
@@ -283,28 +287,32 @@ public:
         Float cosThetaT;
         Float F = fresnelDielectricExt(Frame::cosTheta(bRec.wi), cosThetaT, m_eta);
 
+        Spectrum specRef = F * m_specularReflectance->eval(bRec.its);
+        Spectrum specTrans = (1 - F) * m_specularTransmittance->eval(bRec.its);
+        Float reflectionPdf = specRef.average() / (specRef.average() + specTrans.average());
+
         if (sampleTransmission && sampleReflection) {
-            if (sample.x <= F) {
+            if (sample.x < reflectionPdf) {
                 bRec.sampledComponent = 0;
                 bRec.sampledType = EDeltaReflection;
                 bRec.wo = reflect(bRec.wi);
                 bRec.eta = 1.0f;
-                pdf = F;
+                pdf = reflectionPdf;
 
-                return m_specularReflectance->eval(bRec.its);
+                return specRef / pdf;
             } else {
                 bRec.sampledComponent = 1;
                 bRec.sampledType = EDeltaTransmission;
                 bRec.wo = refract(bRec.wi, cosThetaT);
                 bRec.eta = cosThetaT < 0 ? m_eta : m_invEta;
-                pdf = 1-F;
+                pdf = 1 - reflectionPdf;
 
                 /* Radiance must be scaled to account for the solid angle compression
                    that occurs when crossing the interface. */
                 Float factor = (bRec.mode == ERadiance)
                     ? (cosThetaT < 0 ? m_invEta : m_eta) : 1.0f;
 
-                return m_specularTransmittance->eval(bRec.its) * (factor * factor);
+                return specTrans * (factor * factor / pdf);
             }
         } else if (sampleReflection) {
             bRec.sampledComponent = 0;
@@ -313,7 +321,7 @@ public:
             bRec.eta = 1.0f;
             pdf = 1.0f;
 
-            return m_specularReflectance->eval(bRec.its) * F;
+            return specRef;
         } else if (sampleTransmission) {
             bRec.sampledComponent = 1;
             bRec.sampledType = EDeltaTransmission;
@@ -326,7 +334,7 @@ public:
             Float factor = (bRec.mode == ERadiance)
                 ? (cosThetaT < 0 ? m_invEta : m_eta) : 1.0f;
 
-            return m_specularTransmittance->eval(bRec.its) * (factor * factor * (1-F));
+            return specTrans * (factor * factor);
         }
 
         return Spectrum(0.0f);
@@ -341,14 +349,18 @@ public:
         Float cosThetaT;
         Float F = fresnelDielectricExt(Frame::cosTheta(bRec.wi), cosThetaT, m_eta);
 
+        Spectrum specRef = F * m_specularReflectance->eval(bRec.its);
+        Spectrum specTrans = (1 - F) * m_specularTransmittance->eval(bRec.its);
+        Float reflectionPdf = specRef.average() / (specRef.average() + specTrans.average());
+
         if (sampleTransmission && sampleReflection) {
-            if (sample.x <= F) {
+            if (sample.x < reflectionPdf) {
                 bRec.sampledComponent = 0;
                 bRec.sampledType = EDeltaReflection;
                 bRec.wo = reflect(bRec.wi);
                 bRec.eta = 1.0f;
 
-                return m_specularReflectance->eval(bRec.its);
+                return specRef / reflectionPdf;
             } else {
                 bRec.sampledComponent = 1;
                 bRec.sampledType = EDeltaTransmission;
@@ -360,7 +372,7 @@ public:
                 Float factor = (bRec.mode == ERadiance)
                     ? (cosThetaT < 0 ? m_invEta : m_eta) : 1.0f;
 
-                return m_specularTransmittance->eval(bRec.its) * (factor * factor);
+                return specTrans * (factor * factor / (1 - reflectionPdf));
             }
         } else if (sampleReflection) {
             bRec.sampledComponent = 0;
@@ -368,7 +380,7 @@ public:
             bRec.wo = reflect(bRec.wi);
             bRec.eta = 1.0f;
 
-            return m_specularReflectance->eval(bRec.its) * F;
+            return specRef;
         } else if (sampleTransmission) {
             bRec.sampledComponent = 1;
             bRec.sampledType = EDeltaTransmission;
@@ -380,7 +392,7 @@ public:
             Float factor = (bRec.mode == ERadiance)
                 ? (cosThetaT < 0 ? m_invEta : m_eta) : 1.0f;
 
-            return m_specularTransmittance->eval(bRec.its) * (factor * factor * (1-F));
+            return specTrans * (factor * factor);
         }
 
         return Spectrum(0.0f);
@@ -392,6 +404,10 @@ public:
 
     Float getRoughness(const Intersection &its, int component) const {
         return 0.0f;
+    }
+
+    Spectrum getSpecularReflectance(const Intersection &its) const {
+        return m_specularReflectance->eval(its);
     }
 
     std::string toString() const {
