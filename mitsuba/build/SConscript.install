@@ -33,16 +33,19 @@ if not 'DISTDIR' in env:
 
 distDir = env.GetBuildPath(env['DISTDIR'])
 basePath = env.GetBuildPath('#')
+dataDir = os.path.join(distDir, 'data')
+if sys.platform == 'darwin':
+        dataDir = os.path.join(distDir, 'Contents/Resources/data')
 
 for file in os.listdir(env.GetBuildPath('#data/schema')):
         if fnmatch.fnmatch(file, '*.xsl') or fnmatch.fnmatch(file, '*.xsd'):
-                installTargets += env.Install(os.path.join(distDir, 'data/schema'), '#data/schema/' + file)
+                installTargets += env.Install(os.path.join(dataDir, 'schema'), '#data/schema/' + file)
 for file in os.listdir(env.GetBuildPath('#data/ior')):
         if fnmatch.fnmatch(file, '*.spd'):
-                installTargets += env.Install(os.path.join(distDir, 'data/ior'), '#data/ior/' + file)
+                installTargets += env.Install(os.path.join(dataDir, 'ior'), '#data/ior/' + file)
 for file in os.listdir(env.GetBuildPath('#data/microfacet')):
         if fnmatch.fnmatch(file, '*.dat'):
-                installTargets += env.Install(os.path.join(distDir, 'data/microfacet'), '#data/microfacet/' + file)
+                installTargets += env.Install(os.path.join(dataDir, 'microfacet'), '#data/microfacet/' + file)
 
 if 'linux' in sys.platform:
         for plugin in plugins:
@@ -95,11 +98,11 @@ if sys.platform == 'win32':
                         'Qt5Network.dll', 'Qt5OpenGL.dll', 'Qt5XmlPatterns.dll'], prefix = env['QT5_LIBPATH'])
 elif sys.platform == 'darwin':
         for i in plugins:
-                plugin = env.Install(os.path.join(distDir, 'plugins'), i)
+                plugin = env.Install(os.path.join(distDir, 'Contents', 'PlugIns'), i)
                 installTargets += plugin
         for entry in os.walk(os.path.join(basePath, "include")):
                 includeDir = entry[0][len(basePath)+1:]
-                installTargets += env.Install(os.path.join(os.path.join(distDir, 'Headers'), includeDir),
+                installTargets += env.Install(os.path.join(os.path.join(distDir, 'Contents/Resources/Headers'), includeDir),
                         [ ('#' + os.path.join(includeDir, fname)) for fname in entry[2] ])
         install(os.path.join(distDir, 'Contents/MacOS'), ['mitsuba/mitsuba', 'mitsuba/mtssrv', 'mitsuba/mtsutil'])
         if hasCollada:
@@ -129,7 +132,7 @@ elif sys.platform == 'darwin':
                 gui = env.OSXLibInst(frameworkDir, '$QTDIR/frameworks/QtGui.framework/Versions/5/QtGui')
                 widgets = env.OSXLibInst(frameworkDir, '$QTDIR/frameworks/QtWidgets.framework/Versions/5/QtWidgets')
                 print_supp = env.OSXLibInst(frameworkDir, '$QTDIR/frameworks/QtPrintSupport.framework/Versions/5/QtPrintSupport')
-                cocoa = env.OSXLibInst(platformDir, '$QTDIR/frameworks/libqcocoa.dylib')
+                cocoa = env.OSXLibInst(platformDir, '$QTDIR/plugins/platforms/libqcocoa.dylib')
                 installTargets += env.AddPostAction(xml, 'install_name_tool -change @rpath/QtCore.framework/Versions/5/QtCore @rpath/QtCore $TARGET')
                 installTargets += env.AddPostAction(xmlpatterns, 'install_name_tool -change @rpath/QtCore.framework/Versions/5/QtCore @rpath/QtCore $TARGET')
                 installTargets += env.AddPostAction(xmlpatterns, 'install_name_tool -change @rpath/QtNetwork.framework/Versions/5/QtNetwork @rpath/QtNetwork $TARGET')
@@ -156,6 +159,7 @@ elif sys.platform == 'darwin':
                                 installTargets += env.Install(os.path.join(distDir, 'Contents/Frameworks/BWToolkitFramework.framework/Resources'), '#dependencies/frameworks/BWToolkitFramework.framework/Versions/A/Resources/' + file)
                 if hasBreakpad:
                         installTargets += env.Install(os.path.join(distDir, 'Contents/Frameworks'), '#dependencies/frameworks/Breakpad.framework')
+                installTargets += env.Command("Mitsuba.app", [], "codesign --force --deep --sign - Mitsuba.app")
 
 if dist:
         if sys.platform == 'win32':

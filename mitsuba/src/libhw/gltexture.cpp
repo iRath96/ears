@@ -17,11 +17,7 @@
 */
 
 #include <mitsuba/mitsuba.h>
-#if defined(__OSX__)
-#include <OpenGL/glew.h>
-#else
 #include <GL/glew.h>
-#endif
 #include <mitsuba/hw/gltexture.h>
 
 #ifndef GL_FRAMEBUFFER_INCOMPLETE_DUPLICATE_ATTACHMENT_EXT

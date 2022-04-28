@@ -133,7 +133,7 @@ void Logger::log(ELogLevel level, const Class *theClass,
         bool runningInDebugger = (info.kp_proc.p_flag & P_TRACED) != 0;
 
         if (runningInDebugger)
-            __asm__ ("int $3");
+            __builtin_trap();
 #elif defined(__WINDOWS__)
         if (IsDebuggerPresent())
             __debugbreak();

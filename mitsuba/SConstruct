@@ -39,7 +39,7 @@ build('src/libhw/SConscript')
 # Bidirectional support library
 build('src/libbidir/SConscript')
 # Python binding library
-build('src/libpython/SConscript')
+#build('src/libpython/SConscript')
 
 # ===== Build the applications =====
 env = env.Clone()

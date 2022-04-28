@@ -21,6 +21,7 @@
 #define __MITSUBA_CORE_UTIL_H_
 
 #include <boost/static_assert.hpp>
+#include <sys/time.h>
 
 #if defined(__MSVC__)
 # include <intrin.h>
@@ -182,6 +183,21 @@ static FINLINE uint64_t rdtsc(void) {
   unsigned hi, lo;
   __asm__ __volatile__ ("rdtsc" : "=a"(lo), "=d"(hi));
   return ((uint64_t) lo)| (((uint64_t) hi) << 32);
+}
+#elif defined(__AARCH64EL__)
+static FINLINE uint64_t rdtsc(void) {
+    uint64_t val;
+
+    /*
+     * According to ARM DDI 0487F.c, from Armv8.0 to Armv8.5 inclusive, the
+     * system counter is at least 56 bits wide; from Armv8.6, the counter
+     * must be 64 bits wide.  So the system counter could be less than 64
+     * bits wide and it is attributed with the flag 'cap_user_time_short'
+     * is true.
+     */
+    asm volatile("mrs %0, cntvct_el0" : "=r" (val));
+
+    return val;
 }
 #elif defined(__ARMEL__)
 static FINLINE uint64_t rdtsc(void) {

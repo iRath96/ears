@@ -17,11 +17,7 @@
 */
 
 #include <mitsuba/mitsuba.h>
-#if defined(__OSX__)
-#include <OpenGL/glew.h>
-#else
 #include <GL/glew.h>
-#endif
 #include <mitsuba/hw/glprogram.h>
 #include <mitsuba/hw/gputexture.h>
 

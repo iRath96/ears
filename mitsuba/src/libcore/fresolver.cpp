@@ -55,6 +55,8 @@ FileResolver::FileResolver() {
     MTS_AUTORELEASE_END()
     if (basePath.empty())
         Log(EError, "Could not detect the executable path!");
+    m_paths.push_back(fs::canonical(basePath / "Contents"));
+    m_paths.push_back(fs::canonical(basePath / "Contents" / "Resources"));
 #elif defined(__WINDOWS__)
     std::vector<WCHAR> lpFilename(MAX_PATH);
 

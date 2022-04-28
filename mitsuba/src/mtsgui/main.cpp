@@ -234,19 +234,19 @@ int main(int argc, char *argv[]) {
                 logger->removeAppender(appender);
         }
 
-#if defined(__OSX__)
-        /* Create a log file inside the application bundle */
-        MTS_AUTORELEASE_BEGIN()
-        logger->addAppender(new StreamAppender(formatString("%s/mitsuba.%s.log",
-            __mts_bundlepath().c_str(), getHostName().c_str())));
-        MTS_AUTORELEASE_END()
-
-        /* Set application defaults (disable OSX synchronization feature) */
-        __mts_set_appdefaults();
-#else
+//#if defined(__OSX__)
+//        /* Create a log file inside the application bundle */
+//        MTS_AUTORELEASE_BEGIN()
+//        logger->addAppender(new StreamAppender(formatString("%s/mitsuba.%s.log",
+//            __mts_bundlepath().c_str(), getHostName().c_str())));
+//        MTS_AUTORELEASE_END()
+//
+//        /* Set application defaults (disable OSX synchronization feature) */
+//        __mts_set_appdefaults();
+//#else
         /* Create a log file inside the current working directory */
         logger->addAppender(new StreamAppender(formatString("mitsuba.%s.log", getHostName().c_str())));
-#endif
+//#endif
 
 #if !defined(__WINDOWS__)
         /* Correct number parsing on some locales (e.g. ru_RU) */

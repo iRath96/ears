@@ -24,7 +24,7 @@ if not os.path.exists(configFile):
         print('\nA configuration file must be selected! Have a look at http://www.mitsuba-renderer.org/docs.html')
         Exit(1)
 
-needsBuildDependencies = (sys.platform == 'win32' or sys.platform == 'darwin')
+needsBuildDependencies = (sys.platform == 'win32')
 
 if needsBuildDependencies and not os.path.exists(GetBuildPath('#dependencies')):
         print('\nThe required build dependency files are missing. Please see the documentation')
@@ -215,6 +215,8 @@ for ver in python_versions:
                 print('Python ' + ver + ' is missing: not building wrappers')
         env['CPPPATH'][:] = [ x for x in env['CPPPATH'] if x not in includePath ]
 
+hasPython = []
+
 if not conf.CheckCXXHeader('boost/version.hpp'):
         print('Boost is missing (install libboost-all-dev)!')
         Exit(1)
@@ -254,7 +256,7 @@ elif sys.platform == 'darwin':
         if not (conf.CheckCHeader('OpenGL/gl.h') and conf.CheckCHeader('OpenGL/glu.h') and conf.CheckCHeader(['OpenGL/gl.h', 'OpenGL/glext.h'])):
                 print('OpenGL headers are missing!')
                 Exit(1)
-        if not conf.CheckCHeader('OpenGL/glew.h'):
+        if not conf.CheckCHeader('GL/glew.h'):
                 print('GLEW headers are missing!')
                 Exit(1)
 if sys.platform == 'linux2':
@@ -293,16 +295,16 @@ if needsBuildDependencies:
                         if MTS_VERSION != depVersion:
                                 versionMismatch = True
 
-        if versionMismatch:
-                        print('\nThe dependency directory and your Mitsuba codebase have different version')
-                        print('numbers! Your copy of Mitsuba has version %s, whereas the dependencies ' % MTS_VERSION)
-                        print('have version %s. Please bring them into sync, either by running\n' % depVersion)
-                        print('$ hg update -r v%s\n' % depVersion)
-                        print('in the Mitsuba directory, or by running\n')
-                        print('$ cd dependencies')
-                        print('$ hg pull')
-                        print('$ hg update -r v%s\n' % MTS_VERSION)
-                        Exit(1)
+        #if versionMismatch:
+        #                print('\nThe dependency directory and your Mitsuba codebase have different version')
+        #                print('numbers! Your copy of Mitsuba has version %s, whereas the dependencies ' % MTS_VERSION)
+        #                print('have version %s. Please bring them into sync, either by running\n' % depVersion)
+        #                print('$ hg update -r v%s\n' % depVersion)
+        #                print('in the Mitsuba directory, or by running\n')
+        #                print('$ cd dependencies')
+        #                print('$ hg pull')
+        #                print('$ hg update -r v%s\n' % MTS_VERSION)
+        #                Exit(1)
 
 env = conf.Finish()
 

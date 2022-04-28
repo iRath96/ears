@@ -37,7 +37,7 @@ if hasQt:
                 qtEnv.Append(LINKFLAGS=['/SUBSYSTEM:WINDOWS'])
                 qtEnv.Append(LIBS=['qtmain', 'shell32'])
         elif sys.platform == 'darwin':
-                qtEnv.Append(LINKFLAGS=['-Fdependencies/frameworks', '-framework',
+                qtEnv.Append(LINKFLAGS=['-Fdependencies/frameworks', '-F$QTDIR/Frameworks', '-framework',
                         'BWToolkitFramework', '-framework', 'Security', '-framework', 'CoreFoundation'])
                 # Qt 4 headers cause a lot of warnings on clang/OSX -- turn them off
                 if qtEnv['CXX'] == 'clang++':

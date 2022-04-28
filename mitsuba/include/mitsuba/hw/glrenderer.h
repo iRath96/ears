@@ -22,7 +22,12 @@
 
 #include <mitsuba/hw/renderer.h>
 
+#if defined(__OSX__)
+/// @todo hack
+struct GLEWContextStruct {};
+#else
 struct GLEWContextStruct;
+#endif
 
 /// Get the per-thread context for GLEW-MX
 extern MTS_EXPORT_HW GLEWContextStruct *glewGetContext();

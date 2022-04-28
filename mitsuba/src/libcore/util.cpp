@@ -51,7 +51,7 @@
 
 // SSE is not enabled in general when using double precision, however it is
 // required in OS X for FP exception handling
-#if defined(__OSX__) && !defined(MTS_SSE)
+#if defined(__OSX__) && !defined(MTS_SSE) && !defined(__AARCH64EL__)
 #include <xmmintrin.h>
 #undef enable_fpexcept_sse
 #undef query_fpexcept_sse

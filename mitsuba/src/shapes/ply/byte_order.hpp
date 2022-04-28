@@ -11,7 +11,7 @@ namespace ply {
 #  define PLY_BIG_ENDIAN
 #elif (defined(i386) || defined(__i386__) || defined(__i386) || defined(_M_IX86) || defined(_X86_) || defined(__THW_INTEL__) || defined(__I86__) || defined(__INTEL__)) \
    || (defined(__amd64__) || defined(__amd64) || defined(__x86_64__) || defined(__x86_64) || defined(_M_X64)) \
-   || defined(__ARMEL__)
+   || defined(__ARMEL__) || defined(__AARCH64EL__)
 #  define PLY_LITTLE_ENDIAN
 #else
 #  error

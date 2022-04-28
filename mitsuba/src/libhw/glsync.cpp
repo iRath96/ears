@@ -17,11 +17,7 @@
 */
 
 #include <mitsuba/mitsuba.h>
-#if defined(__OSX__)
-#include <OpenGL/glew.h>
-#else
 #include <GL/glew.h>
-#endif
 #include <mitsuba/hw/glsync.h>
 
 #define MTS_SYNC_TIMEOUT 100000000  // 100ms
