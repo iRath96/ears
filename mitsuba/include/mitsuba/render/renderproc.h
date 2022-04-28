@@ -62,6 +62,14 @@ public:
     void setPixelFormat(Bitmap::EPixelFormat pixelFormat,
         int channelCount = -1, bool warnInvalid = false);
 
+    void disableProgress() {
+        m_trackProgress = false;
+    }
+
+    int totalBlocks() {
+        return m_numBlocksTotal;
+    }
+
     // ======================================================================
     //! @{ \name Implementation of the ParallelProcess interface
     // ======================================================================
@@ -90,6 +98,7 @@ protected:
     Bitmap::EPixelFormat m_pixelFormat;
     int m_channelCount;
     bool m_warnInvalid;
+    bool m_trackProgress = true;
 };
 
 MTS_NAMESPACE_END

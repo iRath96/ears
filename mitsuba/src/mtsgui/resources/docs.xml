@@ -211,6 +211,34 @@
         </descr>
     </plugin>
 
+    <plugin type="integrator" name="recursive_path" readableName="Recursive Path Tracer"
+        show="true" className="RecursivePathTracer" extends="MonteCarloIntegrator">
+        <descr>
+            This integrator implements a basic recursive path tracer with advanced Russian Roulette and Splitting strategies.
+            Only equal-time renders are supported for now.
+        </descr>
+        <param name="budget" readableName="Rendering Budget" type="float" default="30" importance="1">
+            The time (in seconds) allocated for rendering.
+        </param>
+        <param name="rrsStrategy" readableName="RRS strategy" type="string" default="noRR" importance="1">
+            What type of Russian Roulette and Splitting to perform.
+            Examples include:
+            <ul>
+                <li><tt>classicRRA</tt> for classic (throughput based) Russian Roulette.</li>
+                <li><tt>ADRR</tt> for Adjoint-Driven Russian Roulette.</tt>
+                <li><tt>ADRRS</tt> for Adjoint-Driven Russian Roulette and Splitting.</li>
+                <li><tt>EAR</tt> for Efficieny-Aware Russian Roulette.</tt>
+                <li><tt>EARS</tt> for Efficieny-Aware Russian Roulette and Splitting.</li>
+            </ul>
+        </param>
+        <param name="splittingMin" readableName="Min. Splitting" type="float" default="0.05" importance="1">
+            The minimum value the splitting factor will be clamped to (limits RR).
+        </param>
+        <param name="splittingMax" readableName="Max. Splitting" type="float" default="20" importance="1">
+            The maximum value the splitting factor will be clamped to (limits splitting).
+        </param>
+    </plugin>
+
     <plugin type="integrator" name="volpath_simple" readableName = "Volumetric path tracer (Simple)"
             show="true" className="SimpleVolumetricPathTracer" extends="MonteCarloIntegrator">
         <descr>

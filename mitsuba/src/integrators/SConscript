@@ -7,6 +7,10 @@ plugins += env.SharedLibrary('volpath', ['path/volpath.cpp'])
 plugins += env.SharedLibrary('volpath_simple', ['path/volpath_simple.cpp'])
 plugins += env.SharedLibrary('ptracer', ['ptracer/ptracer.cpp', 'ptracer/ptracer_proc.cpp'])
 
+oidnEnv = env.Clone()
+oidnEnv.Append(LIBS=['OpenImageDenoise'])
+plugins += oidnEnv.SharedLibrary('recursive_path', ['path/recursive_path.cpp'])
+
 # Photon mapping-based techniques
 plugins += env.SharedLibrary('photonmapper', ['photonmapper/photonmapper.cpp', 'photonmapper/bre.cpp'])
 plugins += env.SharedLibrary('ppm', ['photonmapper/ppm.cpp'])

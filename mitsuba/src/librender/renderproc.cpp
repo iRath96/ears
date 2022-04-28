@@ -28,7 +28,8 @@ public:
     BlockRenderer(Bitmap::EPixelFormat pixelFormat, int channelCount, int blockSize,
         int borderSize, bool warnInvalid) : m_pixelFormat(pixelFormat),
         m_channelCount(channelCount), m_blockSize(blockSize),
-        m_borderSize(borderSize), m_warnInvalid(warnInvalid) { }
+        m_borderSize(borderSize), m_warnInvalid(warnInvalid) {
+    }
 
     BlockRenderer(Stream *stream, InstanceManager *manager) {
         m_pixelFormat = (Bitmap::EPixelFormat) stream->readInt();
@@ -100,7 +101,7 @@ public:
 
     MTS_DECLARE_CLASS()
 protected:
-    virtual ~BlockRenderer() { }
+    virtual ~BlockRenderer() {}
 private:
     ref<Scene> m_scene;
     ref<Sensor> m_sensor;
@@ -115,16 +116,16 @@ private:
 };
 
 BlockedRenderProcess::BlockedRenderProcess(const RenderJob *parent, RenderQueue *queue,
-        int blockSize) : m_queue(queue), m_parent(parent), m_resultCount(0), m_progress(NULL) {
+    int blockSize) : m_queue(queue), m_parent(parent), m_resultCount(0), m_progress(NULL) {
     m_blockSize = blockSize;
     m_resultMutex = new Mutex();
     m_pixelFormat = Bitmap::ESpectrumAlphaWeight;
     m_channelCount = -1;
-    m_warnInvalid = true;
+    m_warnInvalid = false;
 }
 
 BlockedRenderProcess::~BlockedRenderProcess() {
-    if (m_progress)
+    if (m_trackProgress && m_progress)
         delete m_progress;
 }
 
@@ -136,14 +137,15 @@ void BlockedRenderProcess::setPixelFormat(Bitmap::EPixelFormat pixelFormat, int 
 
 ref<WorkProcessor> BlockedRenderProcess::createWorkProcessor() const {
     return new BlockRenderer(m_pixelFormat, m_channelCount,
-            m_blockSize, m_borderSize, m_warnInvalid);
+        m_blockSize, m_borderSize, m_warnInvalid);
 }
 
 void BlockedRenderProcess::processResult(const WorkResult *result, bool cancelled) {
     const ImageBlock *block = static_cast<const ImageBlock *>(result);
     UniqueLock lock(m_resultMutex);
     m_film->put(block);
-    m_progress->update(++m_resultCount);
+    if (m_progress)
+        m_progress->update(++m_resultCount);
     lock.unlock();
     m_queue->signalWorkEnd(m_parent, block, cancelled);
 }
@@ -174,9 +176,11 @@ void BlockedRenderProcess::bindResource(const std::string &name, int id) {
             Log(EError, "The block size must be larger than the image reconstruction filter radius!");
 
         BlockedImageProcess::init(offset, size, m_blockSize);
-        if (m_progress)
-            delete m_progress;
-        m_progress = new ProgressReporter("Rendering", m_numBlocksTotal, m_parent);
+        if (m_trackProgress) {
+            if (m_progress)
+                delete m_progress;
+            m_progress = new ProgressReporter("Rendering", m_numBlocksTotal, m_parent);
+        }
     }
     BlockedImageProcess::bindResource(name, id);
 }

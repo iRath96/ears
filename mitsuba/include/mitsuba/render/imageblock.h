@@ -96,6 +96,9 @@ public:
     /// Return a pointer to the underlying bitmap representation (const version)
     inline const Bitmap *getBitmap() const { return m_bitmap.get(); }
 
+    /// Return a pointer to the reconstruction filter
+    inline const ReconstructionFilter *getReconstructionFilter() const { return m_filter; }
+
     /// Clear everything to zero
     inline void clear() { m_bitmap->clear(); }
 

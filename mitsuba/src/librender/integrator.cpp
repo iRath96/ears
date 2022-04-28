@@ -217,8 +217,8 @@ MonteCarloIntegrator::MonteCarloIntegrator(const Properties &props) : SamplingIn
      */
     m_hideEmitters = props.getBoolean("hideEmitters", false);
 
-    if (m_rrDepth <= 0)
-        Log(EError, "'rrDepth' must be set to a value greater than zero!");
+    //if (m_rrDepth <= 0)
+    //    Log(EError, "'rrDepth' must be set to a value greater than zero!");
 
     if (m_maxDepth <= 0 && m_maxDepth != -1)
         Log(EError, "'maxDepth' must be set to -1 (infinite) or a value greater than zero!");
