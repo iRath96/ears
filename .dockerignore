@@ -1,0 +1,51 @@
+# Build dependencies
+/mitsuba/dependencies
+
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+
+# Other build artifacts
+/mitsuba/.sconf_temp
+/mitsuba/.sconsign.dblite
+/mitsuba/build/.vs
+/mitsuba/build/[R,r]elease
+/mitsuba/build/[D,d]ebug
+/mitsuba/dist
+
+# Rendering artifacts
+*.log
+*.mip
+
+/visualizer/build
+
+*.vcxproj.user
+/.vscode
