@@ -4,7 +4,7 @@
 
 This repository contains the authors' Mitsuba implementation of the 
 ["Efficiency-Aware Russian Roulette and Splitting" algorithm](https://graphics.cg.uni-saarland.de/publications/rath-sig2022.html).
-We have implemented our algorithm in a recursive path tracer, which can be found under [`mitsuba/src/integrators/path/recursive_path.cpp`](/ears/blob/master/mitsuba/src/integrators/path/recursive_path.cpp).
+We have implemented our algorithm in a recursive path tracer, which can be found under [`mitsuba/src/integrators/path/recursive_path.cpp`](/mitsuba/src/integrators/path/recursive_path.cpp).
 
 ## Parameters
 
